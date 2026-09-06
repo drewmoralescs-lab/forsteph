@@ -45,11 +45,26 @@
 
   body{
     margin:0;
-    background: var(--wine-deep);
+    background:
+      radial-gradient(ellipse 900px 600px at 50% -10%, rgba(216,166,87,.10), transparent 60%),
+      radial-gradient(ellipse 900px 700px at 50% 110%, rgba(243,182,196,.08), transparent 60%),
+      var(--wine-deep);
     color: var(--cream);
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before{
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: .035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   h1, h2, h3, .display{
@@ -77,37 +92,181 @@
     align-items: center;
     justify-content: center;
     transition: transform .2s ease, background .3s ease, border-color .3s ease;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,.5);
   }
   #theme-toggle:active{ transform: scale(.92); }
 
   /* -------------------- MUSIC TOGGLE -------------------- */
 
-  #music-toggle{
+  /* -------------------- MUSIC PREVIEW CARD (fixed, lower-left) -------------------- */
+
+  @keyframes music-glow{
+    0%, 100%{ box-shadow: 0 20px 44px -18px rgba(0,0,0,.65), 0 0 0 1px var(--wine-line), 0 0 22px -4px rgba(216,166,87,.25); }
+    50%{ box-shadow: 0 20px 44px -18px rgba(0,0,0,.65), 0 0 0 1px var(--blush), 0 0 26px -2px rgba(243,182,196,.35); }
+  }
+
+  .music-card{
     position: fixed;
-    bottom: 18px;
     left: 18px;
+    bottom: 18px;
     z-index: 50;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    width: min(380px, calc(100vw - 36px));
+    padding: 16px 20px 14px;
+    border-radius: 20px;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--wine-panel) 100%, white 4%), var(--wine-deep) 75%);
     border: 1px solid var(--wine-line);
-    background: var(--wine-panel);
+    animation: music-glow 4s ease-in-out infinite;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* soft decorative corner bloom */
+  .music-card::before{
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(216,166,87,.25), transparent 70%);
+    pointer-events: none;
+  }
+  .music-card::after{
+    content: '';
+    position: absolute;
+    bottom: -26px;
+    left: 40%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(243,182,196,.18), transparent 70%);
+    pointer-events: none;
+  }
+
+  .music-card-deco{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .music-card-deco span{
+    position: absolute;
+    font-size: 11px;
+    color: var(--gold);
+    opacity: .35;
+  }
+  .music-card-deco span.sparkle{ animation: sparkle-twinkle 2.6s ease-in-out infinite; }
+
+  .music-card-text{
+    text-align: left;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .music-card-title{
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 16px;
     color: var(--cream);
-    font-size: 17px;
+    white-space: nowrap;
+  }
+  .music-card-sub{
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  .music-card-controls{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    z-index: 1;
+  }
+
+  .music-card-note, .music-card-play{
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform .2s ease, background .3s ease, border-color .3s ease;
+    transition: transform .2s ease, border-color .3s ease;
   }
-  #music-toggle:active{ transform: scale(.92); }
-  #music-toggle.playing{
+
+  .music-card-note{
+    width: 36px; height: 36px;
+    background: var(--wine-panel);
+    border: 1px solid var(--wine-line);
+    color: var(--blush);
+    font-size: 14px;
+  }
+  .music-card-note.playing{
     animation: spin-note 3.5s linear infinite;
     border-color: var(--blush);
   }
   @keyframes spin-note{
     from{ transform: rotate(0deg); }
     to{ transform: rotate(360deg); }
+  }
+
+  .music-card-play{
+    width: 44px; height: 44px;
+    background: var(--blush);
+    color: var(--wine-deep);
+    font-size: 14px;
+    box-shadow: 0 8px 18px -6px rgba(0,0,0,.5);
+  }
+  .music-card-play:active{ transform: scale(.94); }
+
+  .music-card-progress{
+    position: relative;
+    flex: 1;
+    min-width: 40px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+  }
+  .music-card-track{
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--wine-line);
+    border-radius: 2px;
+  }
+  .music-card-fill{
+    position: absolute;
+    left: 0;
+    height: 2px;
+    width: 35%;
+    background: linear-gradient(90deg, var(--gold), var(--blush));
+    border-radius: 2px;
+  }
+  .music-card-dot{
+    position: absolute;
+    left: 35%;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    transform: translateX(-50%);
+    box-shadow: 0 4px 10px -2px rgba(0,0,0,.5);
+  }
+
+  @media (max-width: 480px){
+    .music-card{
+      flex-wrap: wrap;
+      gap: 10px 16px;
+    }
+    .music-card-controls{
+      width: 100%;
+    }
   }
 
   /* -------------------- PASSWORD GATE -------------------- */
@@ -174,16 +333,19 @@
 
   .password-btn{
     width: 100%;
-    padding: 13px 20px;
+    padding: 14px 20px;
     border: none;
     border-radius: 10px;
-    background: #fff;
+    background: linear-gradient(165deg, #ffffff, #f0e4e6);
     color: #6e0f1e;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: transform .15s ease;
+    box-shadow: 0 10px 24px -8px rgba(0,0,0,.4);
   }
   .password-btn:active{ transform: scale(.97); }
 
@@ -273,16 +435,19 @@
   }
   .alert-btn{
     width: 100%;
-    padding: 13px 20px;
+    padding: 14px 20px;
     border: none;
     border-radius: 10px;
-    background: #fff;
+    background: linear-gradient(165deg, #ffffff, #f0e4e6);
     color: #6e0f1e;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: transform .15s ease;
+    box-shadow: 0 10px 24px -8px rgba(0,0,0,.4);
   }
   .alert-btn:active{ transform: scale(.97); }
 
@@ -336,6 +501,18 @@
     color: var(--cream);
   }
   .hero .glyph{ color: var(--gold); }
+  .hero-rule{
+    width: 64px;
+    height: 2px;
+    margin: 22px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .hero.play .hero-rule{
+    animation: hero-in .8s cubic-bezier(.2,.8,.25,1) forwards;
+    animation-delay: .45s;
+  }
   .hero p{
     max-width: 480px;
     margin: 22px auto 0;
@@ -345,11 +522,17 @@
   }
 
   .note{
+    position: relative;
     background: var(--wine-panel);
+    background: linear-gradient(165deg, color-mix(in srgb, var(--wine-panel) 100%, white 4%), var(--wine-panel) 55%);
     border: 1px solid var(--wine-line);
-    border-radius: 20px;
-    padding: 30px 26px;
+    border-radius: 22px;
+    padding: 34px 30px;
     margin-bottom: 56px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.05) inset,
+      0 24px 48px -20px rgba(0,0,0,.5),
+      0 2px 6px rgba(0,0,0,.2);
   }
   .note-head{
     display: flex;
@@ -363,10 +546,12 @@
     width: 34px; height: 34px;
     border-radius: 9px;
     background: var(--blush);
+    background: linear-gradient(165deg, var(--blush), color-mix(in srgb, var(--blush) 100%, black 12%));
     flex-shrink: 0;
     display:flex; align-items:center; justify-content:center;
     color: var(--wine-deep);
     font-size: 16px;
+    box-shadow: 0 6px 14px -6px rgba(0,0,0,.5);
   }
   .note-head h3{ font-size: 19px; color: var(--cream); }
   .note p{
@@ -384,11 +569,27 @@
   }
 
   .section-title{
-    font-size: 15px;
+    font-size: 13px;
     color: var(--gold);
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before{
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .section-title::after{
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: .4;
   }
   .section-heading{
     font-size: clamp(22px, 5vw, 30px);
@@ -396,37 +597,65 @@
     margin-bottom: 28px;
   }
 
-  /* photo gallery */
+  /* photo gallery — scattered polaroid layout */
 
   .gallery{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-bottom: 56px;
-  }
-  @media (min-width: 640px){
-    .gallery{ grid-template-columns: repeat(3, 1fr); }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px 16px;
+    margin-bottom: 64px;
+    padding: 10px 6px 0;
   }
 
   .photo{
     position: relative;
-    aspect-ratio: 3/4;
-    border-radius: 14px;
+    width: 132px;
+    background: var(--cream);
+    border-radius: 6px;
+    padding: 10px 10px 22px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    transition: transform .3s cubic-bezier(.2,.8,.25,1.1), box-shadow .3s ease;
+  }
+
+  @media (min-width: 480px){
+    .photo{ width: 150px; }
+  }
+  @media (min-width: 640px){
+    .photo{ width: 170px; }
+  }
+
+  /* hand-placed scatter: alternating tilt + vertical offset per card */
+  .photo:nth-child(6n+1){ transform: rotate(-6deg) translateY(6px); }
+  .photo:nth-child(6n+2){ transform: rotate(4deg) translateY(-4px); }
+  .photo:nth-child(6n+3){ transform: rotate(-2deg) translateY(10px); }
+  .photo:nth-child(6n+4){ transform: rotate(6deg) translateY(2px); }
+  .photo:nth-child(6n+5){ transform: rotate(-5deg) translateY(-6px); }
+  .photo:nth-child(6n+6){ transform: rotate(3deg) translateY(8px); }
+
+  .photo:hover{
+    transform: rotate(0deg) translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 18px 34px rgba(0,0,0,.45);
+    z-index: 5;
+  }
+
+  .photo-inner{
+    position: relative;
+    aspect-ratio: 1/1;
+    border-radius: 3px;
     overflow: hidden;
     background: linear-gradient(150deg, var(--wine-panel), var(--wine-line));
-    border: 1px solid var(--wine-line);
-    cursor: pointer;
-    padding: 0;
-    display: block;
-    width: 100%;
   }
+
   .photo img{
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
     transition: transform .35s ease;
   }
-  .photo:hover img{ transform: scale(1.04); }
+  .photo:hover img{ transform: scale(1.06); }
 
   .photo .fallback{
     position: absolute; inset: 0;
@@ -434,55 +663,194 @@
     flex-direction: column;
     gap: 8px;
     color: var(--muted);
-    font-size: 11px;
+    font-size: 10.5px;
     text-align: center;
-    padding: 10px;
+    padding: 8px;
   }
   .photo .fallback .mark{
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--blush);
   }
 
-  /* letters grid */
+  .photo-tape{
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 46px;
+    height: 16px;
+    background: rgba(243, 182, 196, .55);
+    border: 1px solid rgba(255,255,255,.25);
+  }
+  .photo:nth-child(even) .photo-tape{ transform: translateX(-50%) rotate(3deg); }
+
+  /* letters grid — envelope cards */
 
   .letters{
     display: grid;
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 30px 18px;
     margin-bottom: 50px;
   }
   @media (min-width: 640px){
     .letters{ grid-template-columns: repeat(2, 1fr); }
   }
 
-  .letter-card{
-    background: var(--wine-panel);
-    border: 1px solid var(--wine-line);
-    border-radius: 16px;
-    padding: 24px 22px;
-    text-align: left;
+  .envelope-card{
+    position: relative;
+    background: none;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    transition: transform .2s ease, border-color .2s ease;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    align-items: center;
+    gap: 12px;
     color: inherit;
     font-family: inherit;
   }
-  .letter-card:hover{
-    transform: translateY(-3px);
-    border-color: var(--blush);
+
+  .envelope{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    perspective: 1100px;
   }
-  .letter-num{ font-size: 12px; color: var(--gold); letter-spacing: .05em; }
+
+  /* the back panel of the envelope (mostly hidden, just texture) */
+  .envelope-pocket{
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background-color: var(--wine-panel);
+    background-image:
+      linear-gradient(165deg, color-mix(in srgb, var(--wine-panel) 100%, white 4%), var(--wine-panel) 60%);
+    border: 1px solid var(--wine-line);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.05) inset,
+      0 16px 32px -18px rgba(0,0,0,.5);
+    transition: box-shadow .3s ease, border-color .3s ease;
+    z-index: 1;
+  }
+
+  /* the letter itself, tucked behind the front cover — only its top
+     edge is ever allowed to peek out, through the slot under the flap */
+  .envelope-letter{
+    position: absolute;
+    left: 9%;
+    right: 9%;
+    top: 40%;
+    height: 58%;
+    background: var(--cream);
+    border-radius: 6px 6px 3px 3px;
+    padding: 12px 13px 10px;
+    text-align: left;
+    box-shadow: 0 -4px 10px rgba(0,0,0,.15);
+    transform: translateY(6%);
+    transition: transform .45s cubic-bezier(.3,.7,.25,1);
+    z-index: 2;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* opaque front cover — this is what actually sits in front of the
+     letter and hides it; only the top sliver is left uncovered, which
+     the flap seals shut when closed */
+  .envelope-front{
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    top: 16%;
+    border-radius: 0 0 14px 14px;
+    background-color: var(--wine-panel);
+    background-image:
+      linear-gradient(135deg, transparent 49.3%, rgba(0,0,0,.24) 50%, transparent 50.7%),
+      linear-gradient(45deg, transparent 49.3%, rgba(0,0,0,.24) 50%, transparent 50.7%),
+      linear-gradient(165deg, color-mix(in srgb, var(--wine-panel) 100%, white 4%), var(--wine-panel) 60%);
+    border: 1px solid var(--wine-line);
+    border-top: none;
+    box-shadow: 0 6px 14px -8px rgba(0,0,0,.4);
+    z-index: 3;
+  }
+
+  /* the flap on top — hinges open on hover / click, sealing the slot
+     that the letter peeks through */
+  .envelope-flap{
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--wine-line) 100%, white 8%), var(--wine-line));
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-radius: 14px 14px 0 0;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform .45s cubic-bezier(.4,.2,.2,1);
+    box-shadow: 0 6px 12px rgba(0,0,0,.3);
+    z-index: 4;
+    backface-visibility: hidden;
+  }
+
+  .envelope-seal{
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--blush);
+    color: var(--wine-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: 0 6px 14px -4px rgba(0,0,0,.45);
+    z-index: 5;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+
+  /* hover — flap peeks open and the letter noses up through the slot */
+  .envelope-card:hover .envelope-flap{ transform: rotateX(-30deg); }
+  .envelope-card:hover .envelope-letter{ transform: translateY(-22%); }
+  .envelope-card:hover .envelope-pocket{ border-color: var(--blush); }
+  .envelope-card:hover .envelope-seal{ opacity: 0; transform: translate(-50%, -50%) scale(.5); }
+
+  /* click — flap swings all the way open and the letter slides fully
+     out from behind the front cover, then the letter modal takes over */
+  .envelope-card.opening .envelope-flap{ transform: rotateX(-175deg); }
+  .envelope-card.opening .envelope-letter{ transform: translateY(-92%); }
+  .envelope-card.opening .envelope-seal{ opacity: 0; transform: translate(-50%, -50%) scale(.3); }
+
+  .letter-ghost{
+    position: absolute;
+    top: -10px;
+    right: -6px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--gold);
+    opacity: .18;
+    pointer-events: none;
+    user-select: none;
+  }
+  .letter-num{ font-size: 10.5px; color: var(--blush); letter-spacing: .05em; }
   .letter-title{
-    font-size: 19px;
-    color: var(--cream);
+    font-size: 15px;
+    color: var(--wine-deep);
     font-family: 'Playfair Display', serif;
     font-weight: 600;
+    line-height: 1.3;
   }
-  .letter-teaser{ font-size: 13px; color: var(--muted); line-height: 1.6; flex-grow: 1; }
+  .letter-teaser{
+    font-size: 11.5px;
+    color: color-mix(in srgb, var(--wine-deep) 55%, transparent);
+    line-height: 1.5;
+  }
   .letter-open{ font-size: 13px; color: var(--blush); display: flex; align-items: center; gap: 6px; }
 
   .closing{ text-align: center; padding-top: 20px; }
@@ -502,6 +870,12 @@
     font-size: 12.5px;
     letter-spacing: .04em;
   }
+  #site-footer .footer-rule{
+    width: 90px;
+    height: 1px;
+    margin: 0 auto 32px;
+    background: linear-gradient(90deg, transparent, var(--wine-line), transparent);
+  }
   #site-footer .footer-sign{
     font-family: 'Playfair Display', serif;
     font-style: italic;
@@ -517,6 +891,13 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 6px;
+  }
+
+  .hero-bouquet{
+    margin: 26px 0 0;
+  }
+  .hero-bouquet .bouquet{
+    width: 92px;
   }
 
   .bouquet{
@@ -573,7 +954,7 @@
     font-size: 22px;
     animation: sticker-bounce 2.6s ease-in-out infinite;
   }
-  .note, .letter-card{ position: relative; }
+  .note, .envelope-card{ position: relative; }
 
   /* -------------------- SCROLL REVEAL -------------------- */
 
@@ -586,8 +967,14 @@
     opacity: 1;
     transform: translateY(0);
   }
-  .letter-card.scroll-reveal{
-    transition: opacity .8s cubic-bezier(.2,.8,.25,1), transform .35s cubic-bezier(.2,.8,.25,1), border-color .2s ease;
+  .envelope-card.scroll-reveal{
+    transition: opacity .8s cubic-bezier(.2,.8,.25,1), transform .35s cubic-bezier(.2,.8,.25,1);
+  }
+  .photo.scroll-reveal{
+    transition: opacity .8s cubic-bezier(.2,.8,.25,1), transform .3s cubic-bezier(.2,.8,.25,1.1), box-shadow .3s ease;
+  }
+  .photo.scroll-reveal:not(.in-view){
+    opacity: 0;
   }
 
   /* -------------------- CONFETTI -------------------- */
@@ -778,11 +1165,27 @@
 
   <!-- ======= THEME TOGGLE ======= -->
   <button id="theme-toggle" aria-label="toggle theme">🌙</button>
-
-  <!-- ======= MUSIC TOGGLE -------------------- 
-       Drop an audio file named song.mp3 in the same folder as this
-       file to enable this. Any mp3/ogg works. -->
-  <button id="music-toggle" aria-label="toggle music">🎵</button>
+  
+  <div class="music-card">
+    <div class="music-card-deco">
+      <span class="sparkle" style="top:10%; left:8%; animation-delay:.2s;">✦</span>
+      <span class="sparkle" style="top:70%; left:4%; animation-delay:1.1s;">✧</span>
+      <span class="sparkle" style="top:20%; right:6%; animation-delay:.7s;">✦</span>
+    </div>
+    <div class="music-card-text">
+      <div class="music-card-title">for Steph</div>
+      <div class="music-card-sub">idk this song reminds me of you</div>
+    </div>
+    <div class="music-card-controls">
+      <button id="mc-note-btn" class="music-card-note" aria-label="music">🎵</button>
+      <button id="mc-play-btn" class="music-card-play" aria-label="play">▶</button>
+      <div class="music-card-progress">
+        <div class="music-card-track"></div>
+        <div class="music-card-fill" id="mc-fill"></div>
+        <div class="music-card-dot" id="mc-dot"></div>
+      </div>
+    </div>
+  </div>
   <audio id="bg-music" src="Outro.mp3" loop preload="none"></audio>
 
   <!-- ======= PASSWORD GATE ======= -->
@@ -814,7 +1217,57 @@
     <section class="hero" id="hero">
       <div class="eyebrow-soft reveal">only for Steph's eyes <span class="sticker">✨</span></div>
       <h1 class="reveal">a lil something <span class="glyph">for you</span></h1>
+      <div class="hero-rule"></div>
       <p id="hero-text"><span id="typed-text"></span><span class="type-cursor" id="type-cursor">&nbsp;</span></p>
+
+      <div class="bouquet-wrap hero-bouquet scroll-reveal">
+        <svg class="bouquet" viewBox="0 0 130 220" xmlns="http://www.w3.org/2000/svg">
+          <line x1="65" y1="130" x2="40" y2="205" stroke="#7a8f5c" stroke-width="2.5"/>
+          <line x1="65" y1="130" x2="65" y2="210" stroke="#7a8f5c" stroke-width="2.5"/>
+          <line x1="65" y1="130" x2="90" y2="205" stroke="#7a8f5c" stroke-width="2.5"/>
+          <path d="M50 175 Q38 165 42 150" fill="none" stroke="#7a8f5c" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M80 175 Q92 165 88 150" fill="none" stroke="#7a8f5c" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="38" y="200" width="54" height="14" rx="4" fill="var(--blush)"/>
+
+          <g class="bloom" style="animation-delay:0s">
+            <g transform="translate(40,80)">
+              <ellipse cx="0" cy="-14" rx="9" ry="13" fill="var(--blush)"/>
+              <ellipse cx="13" cy="-6" rx="9" ry="13" fill="var(--blush)" transform="rotate(72 13 -6)"/>
+              <ellipse cx="8" cy="10" rx="9" ry="13" fill="var(--blush)" transform="rotate(144 8 10)"/>
+              <ellipse cx="-8" cy="10" rx="9" ry="13" fill="var(--blush)" transform="rotate(216 -8 10)"/>
+              <ellipse cx="-13" cy="-6" rx="9" ry="13" fill="var(--blush)" transform="rotate(288 -13 -6)"/>
+              <circle cx="0" cy="0" r="7" fill="var(--gold)"/>
+            </g>
+          </g>
+
+          <g class="bloom" style="animation-delay:.8s">
+            <g transform="translate(65,55) scale(1.1)">
+              <ellipse cx="0" cy="-14" rx="9" ry="13" fill="var(--cream)"/>
+              <ellipse cx="13" cy="-6" rx="9" ry="13" fill="var(--cream)" transform="rotate(72 13 -6)"/>
+              <ellipse cx="8" cy="10" rx="9" ry="13" fill="var(--cream)" transform="rotate(144 8 10)"/>
+              <ellipse cx="-8" cy="10" rx="9" ry="13" fill="var(--cream)" transform="rotate(216 -8 10)"/>
+              <ellipse cx="-13" cy="-6" rx="9" ry="13" fill="var(--cream)" transform="rotate(288 -13 -6)"/>
+              <circle cx="0" cy="0" r="7" fill="var(--blush)"/>
+            </g>
+          </g>
+
+          <g class="bloom" style="animation-delay:1.6s">
+            <g transform="translate(90,80)">
+              <ellipse cx="0" cy="-14" rx="9" ry="13" fill="var(--gold)"/>
+              <ellipse cx="13" cy="-6" rx="9" ry="13" fill="var(--gold)" transform="rotate(72 13 -6)"/>
+              <ellipse cx="8" cy="10" rx="9" ry="13" fill="var(--gold)" transform="rotate(144 8 10)"/>
+              <ellipse cx="-8" cy="10" rx="9" ry="13" fill="var(--gold)" transform="rotate(216 -8 10)"/>
+              <ellipse cx="-13" cy="-6" rx="9" ry="13" fill="var(--gold)" transform="rotate(288 -13 -6)"/>
+              <circle cx="0" cy="0" r="7" fill="var(--blush)"/>
+            </g>
+          </g>
+
+          <circle class="sparkle" cx="20" cy="45" r="2.5" fill="var(--gold)" style="animation-delay:0s"/>
+          <circle class="sparkle" cx="108" cy="55" r="2" fill="var(--blush)" style="animation-delay:.6s"/>
+          <circle class="sparkle" cx="65" cy="20" r="2.5" fill="var(--cream)" style="animation-delay:1.2s"/>
+          <circle class="sparkle" cx="30" cy="95" r="2" fill="var(--blush)" style="animation-delay:1.8s"/>
+        </svg>
+      </div>
     </section>
 
     <section class="note scroll-reveal">
@@ -882,6 +1335,7 @@
   </div>
 
   <div id="site-footer" class="scroll-reveal">
+    <div class="footer-rule"></div>
     <div class="bouquet-wrap">
       <span class="sticker tilt-l" style="font-size:16px; align-self:center; margin-right:4px;">✨</span>
       <svg class="bouquet" viewBox="0 0 130 220" xmlns="http://www.w3.org/2000/svg">
@@ -982,6 +1436,16 @@
     });
   }
 
+  /* ---------------- MUSIC CARD ---------------- */
+  const mcPlayBtn = document.getElementById('mc-play-btn');
+  const mcNoteBtn = document.getElementById('mc-note-btn');
+
+  if (mcNoteBtn){
+    mcNoteBtn.addEventListener('click', () => {
+      mcPlayBtn.click();
+    });
+  }
+
   /* ---------------- PASSWORD GATE ----------------
      Change SITE_PASSWORD below to whatever you want it to be.
      Not real security — just a fun little lock, not a login system. */
@@ -1023,25 +1487,31 @@
      If the file is missing, the button just won't do anything —
      nothing breaks. */
   const bgMusic = document.getElementById('bg-music');
-  const musicToggle = document.getElementById('music-toggle');
   bgMusic.volume = 0.45;
+
+  function setMusicPlayingUI(isPlaying){
+    if (mcPlayBtn) mcPlayBtn.textContent = isPlaying ? '⏸' : '▶';
+    if (mcNoteBtn) mcNoteBtn.classList.toggle('playing', isPlaying);
+  }
 
   function playMusic(){
     bgMusic.play().then(() => {
-      musicToggle.classList.add('playing');
+      setMusicPlayingUI(true);
     }).catch(() => {
       // autoplay blocked by the browser — she can just tap the button
     });
   }
 
-  musicToggle.addEventListener('click', () => {
-    if (bgMusic.paused){
-      playMusic();
-    } else {
-      bgMusic.pause();
-      musicToggle.classList.remove('playing');
-    }
-  });
+  if (mcPlayBtn){
+    mcPlayBtn.addEventListener('click', () => {
+      if (bgMusic.paused){
+        playMusic();
+      } else {
+        bgMusic.pause();
+        setMusicPlayingUI(false);
+      }
+    });
+  }
 
   /* ---------------- CONFETTI BURST ---------------- */
   function burstConfetti(){
@@ -1104,9 +1574,10 @@
   }
 
   /* ---------------- PHOTO GALLERY ----------------
-     Looks for photo1.jpg ... photo6.jpg in the same folder.
+     Looks for each file listed below in the same folder as this page.
      Missing files just show a placeholder card — nothing breaks.
-     Edit the caption for each photo in the PHOTOS array. */
+     Edit the caption (or the file name) for each photo in the
+     PHOTOS array. Each photo is shown as a little scattered polaroid. */
   const PHOTOS = [
     { file: "i could stare.jpe", caption: "yeah... I could stare at you all day." },
     { file: "damn.jpe", caption: "this smile lives rent-free in my head." },
@@ -1123,11 +1594,14 @@
     btn.className = 'photo scroll-reveal';
     btn.style.transitionDelay = (Math.min(idx, 5) * 0.08) + 's';
     btn.innerHTML = `
-      <img src="${p.file}" alt="photo"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-      <div class="fallback" style="display:none;">
-        <div class="mark">✦</div>
-        <span>put ${p.file} here</span>
+      <div class="photo-tape"></div>
+      <div class="photo-inner">
+        <img src="${p.file}" alt="photo"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="fallback" style="display:none;">
+          <div class="mark">✦</div>
+          <span>put ${p.file} here</span>
+        </div>
       </div>
     `;
     btn.addEventListener('click', () => openPhoto(p));
@@ -1269,15 +1743,31 @@
 
   LETTERS.forEach((letter, i) => {
     const card = document.createElement('button');
-    card.className = 'letter-card scroll-reveal';
+    card.className = 'envelope-card scroll-reveal';
     card.style.transitionDelay = (Math.min(i, 6) * 0.08) + 's';
     card.innerHTML = `
-      <div class="letter-num">letter 0${i + 1}</div>
-      <div class="letter-title">${letter.title}</div>
-      <div class="letter-teaser">${letter.teaser}</div>
+      <div class="envelope">
+        <div class="envelope-pocket"></div>
+        <div class="envelope-letter">
+          <span class="letter-ghost">${i + 1}</span>
+          <div class="letter-num">letter 0${i + 1}</div>
+          <div class="letter-title">${letter.title}</div>
+          <div class="letter-teaser">${letter.teaser}</div>
+        </div>
+        <div class="envelope-front"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-seal">♡</div>
+      </div>
       <div class="letter-open">open letter →</div>
     `;
-    card.addEventListener('click', () => openLetter(letter));
+    card.addEventListener('click', () => {
+      if (card.classList.contains('opening')) return;
+      card.classList.add('opening');
+      setTimeout(() => {
+        openLetter(letter);
+        setTimeout(() => card.classList.remove('opening'), 400);
+      }, 480);
+    });
     lettersEl.appendChild(card);
   });
 
