@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>a lil sumn for you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================================
+     EDIT ZONE — things you can change without touching any logic
+     ============================================================
+     1. Replace "Steph" everywhere with her actual name.
+     2. Replace "Drew" everywhere with your name.
+     3. Letter text lives in the LETTERS array (search "LETTER CONTENT").
+     4. Photo captions live in the PHOTOS array right below LETTERS.
+     5. For pictures: save files as photo1.jpg, photo2.jpg ... photo6.jpg
+        in the same folder as this file. Missing ones just show a
+        placeholder box — nothing breaks.
+     ============================================================ */
+
+  :root{
+    --wine-deep:   #22090f;
+    --wine-panel:  #33121a;
+    --wine-line:   #4a1f29;
+    --blush:       #f3b6c4;
+    --gold:        #d8a657;
+    --cream:       #f8ede6;
+    --muted:       #c79aa5;
+  }
+
+  body.cute-mode{
+    --wine-deep:   #fff3f6;
+    --wine-panel:  #ffe1ea;
+    --wine-line:   #f6bfd2;
+    --blush:       #d6577c;
+    --gold:        #c98a3e;
+    --cream:       #3a1220;
+    --muted:       #8a5866;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--wine-deep);
+    color: var(--cream);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .display{
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  /* -------------------- THEME TOGGLE -------------------- */
+
+  #theme-toggle{
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--wine-line);
+    background: var(--wine-panel);
+    color: var(--cream);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, background .3s ease, border-color .3s ease;
+  }
+  #theme-toggle:active{ transform: scale(.92); }
+
+  /* -------------------- MUSIC TOGGLE -------------------- */
+
+  #music-toggle{
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--wine-line);
+    background: var(--wine-panel);
+    color: var(--cream);
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, background .3s ease, border-color .3s ease;
+  }
+  #music-toggle:active{ transform: scale(.92); }
+  #music-toggle.playing{
+    animation: spin-note 3.5s linear infinite;
+    border-color: var(--blush);
+  }
+  @keyframes spin-note{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+  }
+
+  /* -------------------- PASSWORD GATE -------------------- */
+
+  #password-overlay{
+    position: fixed;
+    inset: 0;
+    background: #0a0202;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 24px;
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  #password-overlay.hidden{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .password-box{
+    width: 100%;
+    max-width: 340px;
+    background: linear-gradient(160deg, #45151f, #250810);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 32px 26px;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  }
+  .password-box.shake{ animation: shake .4s ease; }
+
+  .password-lock{
+    font-size: 30px;
+    margin-bottom: 14px;
+  }
+  .password-title{
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .password-sub{
+    font-size: 13px;
+    color: rgba(255,255,255,.55);
+    margin-bottom: 22px;
+  }
+  #password-input{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align: center;
+    outline: none;
+  }
+  #password-input:focus{ border-color: var(--blush); }
+  #password-input::placeholder{ color: rgba(255,255,255,.35); }
+
+  .password-btn{
+    width: 100%;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #fff;
+    color: #6e0f1e;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .password-btn:active{ transform: scale(.97); }
+
+  .password-error{
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: #ff9db0;
+    display: none;
+  }
+  .password-error.show{ display: block; }
+
+  /* -------------------- JUMPSCARE OVERLAY -------------------- */
+
+  #alert-overlay{
+    position: fixed;
+    inset: 0;
+    background: #0a0202;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 24px;
+    transition: opacity .6s ease, visibility .6s ease;
+  }
+  #alert-overlay.hidden{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .alert-box{
+    width: 100%;
+    max-width: 360px;
+    background: linear-gradient(160deg, #6e0f1e, #37060d);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 34px 28px;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6);
+    animation: alert-in .5s cubic-bezier(.2,.9,.3,1.3);
+  }
+  @keyframes alert-in{
+    0%{ transform: scale(.85); opacity: 0; }
+    60%{ transform: scale(1.03); opacity: 1; }
+    100%{ transform: scale(1); }
+  }
+  .alert-box.shake{ animation: shake .4s ease; }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-8px); }
+    40%{ transform: translateX(7px); }
+    60%{ transform: translateX(-5px); }
+    80%{ transform: translateX(4px); }
+  }
+
+  .alert-icon{
+    width: 54px; height: 54px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .alert-icon span{
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #b3101f;
+    display:block;
+  }
+
+  .alert-eyebrow{
+    font-size: 12px;
+    letter-spacing: .12em;
+    color: var(--blush);
+    margin-bottom: 10px;
+  }
+  .alert-title{
+    font-size: 26px;
+    line-height: 1.25;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .alert-sub{
+    font-size: 13.5px;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 26px;
+    line-height: 1.5;
+  }
+  .alert-btn{
+    width: 100%;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #fff;
+    color: #6e0f1e;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .alert-btn:active{ transform: scale(.97); }
+
+  /* -------------------- MAIN PAGE -------------------- */
+
+  #site{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 64px 24px 100px;
+  }
+
+  .hero{
+    text-align: center;
+    padding: 20px 0 56px;
+  }
+  .hero .reveal{
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .hero.play .reveal{
+    animation: hero-in .8s cubic-bezier(.2,.8,.25,1) forwards;
+  }
+  .hero.play .reveal:nth-of-type(1){ animation-delay: .1s; }
+  .hero.play .reveal:nth-of-type(2){ animation-delay: .3s; }
+  .hero.play .reveal:nth-of-type(3){ animation-delay: .6s; }
+
+  #hero-text{ min-height: 1.5em; }
+  .type-cursor{
+    display: inline-block;
+    width: 2px;
+    background: var(--blush);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  @keyframes hero-in{
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  .eyebrow-soft{
+    font-size: 13px;
+    color: var(--blush);
+    margin-bottom: 14px;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+  .hero h1{
+    font-size: clamp(32px, 8vw, 54px);
+    line-height: 1.15;
+    color: var(--cream);
+  }
+  .hero .glyph{ color: var(--gold); }
+  .hero p{
+    max-width: 480px;
+    margin: 22px auto 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .note{
+    background: var(--wine-panel);
+    border: 1px solid var(--wine-line);
+    border-radius: 20px;
+    padding: 30px 26px;
+    margin-bottom: 56px;
+  }
+  .note-head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--wine-line);
+  }
+  .note-dot{
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: var(--blush);
+    flex-shrink: 0;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--wine-deep);
+    font-size: 16px;
+  }
+  .note-head h3{ font-size: 19px; color: var(--cream); }
+  .note p{
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .note p:last-child{ margin-bottom: 0; }
+  .note .sign{
+    color: var(--blush);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .section-title{
+    font-size: 15px;
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  .section-heading{
+    font-size: clamp(22px, 5vw, 30px);
+    color: var(--cream);
+    margin-bottom: 28px;
+  }
+
+  /* photo gallery */
+
+  .gallery{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 56px;
+  }
+  @media (min-width: 640px){
+    .gallery{ grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .photo{
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(150deg, var(--wine-panel), var(--wine-line));
+    border: 1px solid var(--wine-line);
+    cursor: pointer;
+    padding: 0;
+    display: block;
+    width: 100%;
+  }
+  .photo img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .35s ease;
+  }
+  .photo:hover img{ transform: scale(1.04); }
+
+  .photo .fallback{
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+    padding: 10px;
+  }
+  .photo .fallback .mark{
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--blush);
+  }
+
+  /* letters grid */
+
+  .letters{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 50px;
+  }
+  @media (min-width: 640px){
+    .letters{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .letter-card{
+    background: var(--wine-panel);
+    border: 1px solid var(--wine-line);
+    border-radius: 16px;
+    padding: 24px 22px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .2s ease, border-color .2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: inherit;
+    font-family: inherit;
+  }
+  .letter-card:hover{
+    transform: translateY(-3px);
+    border-color: var(--blush);
+  }
+  .letter-num{ font-size: 12px; color: var(--gold); letter-spacing: .05em; }
+  .letter-title{
+    font-size: 19px;
+    color: var(--cream);
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+  }
+  .letter-teaser{ font-size: 13px; color: var(--muted); line-height: 1.6; flex-grow: 1; }
+  .letter-open{ font-size: 13px; color: var(--blush); display: flex; align-items: center; gap: 6px; }
+
+  .closing{ text-align: center; padding-top: 20px; }
+  .closing h2{
+    font-size: clamp(20px, 5vw, 28px);
+    line-height: 1.5;
+    color: var(--cream);
+    max-width: 560px;
+    margin: 0 auto 16px;
+  }
+  .closing p{ color: var(--muted); font-size: 14px; }
+
+  #site-footer{
+    text-align: center;
+    padding: 40px 0 10px;
+    color: var(--muted);
+    font-size: 12.5px;
+    letter-spacing: .04em;
+  }
+  #site-footer .footer-sign{
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--blush);
+    margin-bottom: 6px;
+  }
+
+  /* -------------------- ANIMATED BOUQUET -------------------- */
+
+  .bouquet-wrap{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .bouquet{
+    width: 130px;
+    height: auto;
+    transform-origin: 65px 210px;
+    animation: bouquet-sway 4.5s ease-in-out infinite alternate;
+  }
+  @keyframes bouquet-sway{
+    0%{ transform: rotate(-3deg); }
+    100%{ transform: rotate(3deg); }
+  }
+
+  .bloom{
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: bloom-pulse 3.2s ease-in-out infinite;
+  }
+  @keyframes bloom-pulse{
+    0%, 100%{ transform: scale(1); }
+    50%{ transform: scale(1.07); }
+  }
+
+  .sparkle{
+    animation: sparkle-twinkle 2.4s ease-in-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  @keyframes sparkle-twinkle{
+    0%, 100%{ opacity: .15; transform: scale(.7); }
+    50%{ opacity: 1; transform: scale(1.15); }
+  }
+
+  /* -------------------- CUTE STICKERS -------------------- */
+
+  .sticker{
+    display: inline-block;
+    font-size: 20px;
+    line-height: 1;
+    animation: sticker-bounce 2.6s ease-in-out infinite;
+    transform-origin: center;
+  }
+  .sticker.tilt-l{ animation-delay: .3s; }
+  .sticker.tilt-r{ animation-delay: .9s; }
+  @keyframes sticker-bounce{
+    0%, 100%{ transform: translateY(0) rotate(-8deg); }
+    50%{ transform: translateY(-5px) rotate(6deg); }
+  }
+
+  .card-sticker{
+    position: absolute;
+    top: -12px;
+    right: -8px;
+    font-size: 22px;
+    animation: sticker-bounce 2.6s ease-in-out infinite;
+  }
+  .note, .letter-card{ position: relative; }
+
+  /* -------------------- SCROLL REVEAL -------------------- */
+
+  .scroll-reveal{
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity .8s cubic-bezier(.2,.8,.25,1), transform .8s cubic-bezier(.2,.8,.25,1);
+  }
+  .scroll-reveal.in-view{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .letter-card.scroll-reveal{
+    transition: opacity .8s cubic-bezier(.2,.8,.25,1), transform .35s cubic-bezier(.2,.8,.25,1), border-color .2s ease;
+  }
+
+  /* -------------------- CONFETTI -------------------- */
+
+  .confetti-layer{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+  }
+  .confetti-piece{
+    position: absolute;
+    top: -12px;
+    border-radius: 2px;
+    animation-name: confetti-fall;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+  }
+  @keyframes confetti-fall{
+    0%{ transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100%{ transform: translateY(100vh) rotate(340deg); opacity: 0; }
+  }
+
+  /* -------------------- LETTER MODAL -------------------- */
+
+  #letter-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(10,2,4,.78);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease, visibility .3s ease;
+  }
+  @media (min-width: 640px){ #letter-modal{ align-items: center; } }
+  #letter-modal.open{ opacity: 1; visibility: visible; }
+
+  .modal-card{
+    width: 100%;
+    max-width: 520px;
+    max-height: 82vh;
+    overflow-y: auto;
+    background: var(--wine-panel);
+    border: 1px solid var(--wine-line);
+    border-radius: 22px 22px 0 0;
+    padding: 32px 26px 40px;
+    transform: translateY(30px);
+    transition: transform .35s cubic-bezier(.2,.9,.3,1.1);
+  }
+  @media (min-width: 640px){ .modal-card{ border-radius: 22px; } }
+  #letter-modal.open .modal-card{ transform: translateY(0); }
+
+  .modal-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .modal-top h3{ font-size: 23px; color: var(--cream); max-width: 380px; }
+  #modal-close, #photo-close{
+    background: none;
+    border: 1px solid var(--wine-line);
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .modal-body p{ font-size: 14.5px; line-height: 1.9; color: var(--muted); margin: 0 0 14px; }
+  .modal-body p:last-child{ margin-bottom: 0; }
+  .modal-sign{
+    margin-top: 20px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--blush);
+    font-size: 16px;
+  }
+
+  /* -------------------- PHOTO PREVIEW MODAL -------------------- */
+
+  #photo-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(5,1,2,.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 600;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .35s ease, visibility .35s ease;
+    padding: 24px;
+    overflow: hidden;
+  }
+  #photo-modal.open{ opacity: 1; visibility: visible; }
+
+  .photo-card{
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--wine-panel);
+    border: 1px solid var(--wine-line);
+    border-radius: 20px;
+    padding: 14px 14px 26px;
+    text-align: center;
+    transform: scale(.9);
+    transition: transform .4s cubic-bezier(.2,.9,.25,1.2);
+  }
+  #photo-modal.open .photo-card{ transform: scale(1); }
+
+  .photo-card img{
+    width: 100%;
+    max-height: 60vh;
+    object-fit: cover;
+    border-radius: 14px;
+    display: block;
+  }
+
+  .photo-card .preview-fallback{
+    width: 100%;
+    height: 260px;
+    border-radius: 14px;
+    background: linear-gradient(150deg, var(--wine-panel), var(--wine-line));
+    border: 1px solid var(--wine-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+  }
+  .preview-fallback .mark{
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--blush);
+  }
+
+  .photo-caption{
+    margin-top: 18px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--blush);
+    font-size: 17px;
+    padding: 0 8px;
+  }
+
+  #photo-close{
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    background: var(--wine-deep);
+  }
+
+  /* floating heart effect */
+  .heart-field{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 20px;
+  }
+  .heart{
+    position: absolute;
+    bottom: -10px;
+    font-size: 16px;
+    color: var(--blush);
+    opacity: 0;
+    animation: float-up 2.6s ease-in forwards;
+  }
+  @keyframes float-up{
+    0%{ opacity: 0; transform: translateY(0) scale(.6) rotate(0deg); }
+    10%{ opacity: .9; }
+    100%{ opacity: 0; transform: translateY(-320px) scale(1.1) rotate(20deg); }
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ======= THEME TOGGLE ======= -->
+  <button id="theme-toggle" aria-label="toggle theme">🌙</button>
+
+  <!-- ======= MUSIC TOGGLE -------------------- 
+       Drop an audio file named song.mp3 in the same folder as this
+       file to enable this. Any mp3/ogg works. -->
+  <button id="music-toggle" aria-label="toggle music">🎵</button>
+  <audio id="bg-music" src="Outro.mp3" loop preload="none"></audio>
+
+  <!-- ======= PASSWORD GATE ======= -->
+  <div id="password-overlay">
+    <div class="password-box" id="password-box">
+      <div class="password-lock">🔒</div>
+      <div class="password-title">this one's locked</div>
+      <div class="password-sub">just for Steph</div>
+      <input type="password" id="password-input" placeholder="enter password">
+      <button class="password-btn" id="password-btn">unlock</button>
+      <div class="password-error" id="password-error">oopss mali ka</div>
+    </div>
+  </div>
+
+  <!-- ======= JUMPSCARE / ALERT INTRO ======= -->
+  <div id="alert-overlay">
+    <div class="alert-box" id="alert-box">
+      <div class="alert-icon"><span></span></div>
+      <div class="alert-eyebrow">system alert</div>
+      <div class="alert-title">You've been hacked.</div>
+      <div class="alert-sub">((by someone who cares about you more than he usually says))</div>
+      <button class="alert-btn" id="alert-btn">see what happened</button>
+    </div>
+  </div>
+
+  <!-- ======= MAIN SITE ======= -->
+  <div id="site">
+
+    <section class="hero" id="hero">
+      <div class="eyebrow-soft reveal">only for Steph's eyes <span class="sticker">✨</span></div>
+      <h1 class="reveal">a lil something <span class="glyph">for you</span></h1>
+      <p id="hero-text"><span id="typed-text"></span><span class="type-cursor" id="type-cursor">&nbsp;</span></p>
+    </section>
+
+    <section class="note scroll-reveal">
+      <span class="card-sticker">💌</span>
+      <div class="note-head">
+        <div class="note-dot">♡</div>
+        <h3>a lil something for you</h3>
+      </div>
+      <p>I never really expected a random conversation to turn into knowing someone this long. Somehow, along the way, we became friends, got comfortable with each other, and started sharing random stories, jokes, and way too much nonsense.</p>
+      <p>So yeah, I made this little thing for you, Steph.</p>
+      <p>Nothing serious, and you don't have to say anything back. I just wanted to put some things into words that I don't really get to say normally.</p>
+      <p>I hope you like it.</p>
+      <p class="sign">— Drew</p>
+    </section>
+
+    <section class="note scroll-reveal">
+      <span class="card-sticker">🌙</span>
+      <div class="note-head">
+        <div class="note-dot">♡</div>
+        <h3>before you open anything...</h3>
+      </div>
+      <p>I don't really know when it happened, but somewhere along the way, you became someone I'm genuinely comfortable talking to.</p>
+      <p>From random conversations to stupid jokes and all the little things in between, I guess we just slowly became part of each other's everyday life.</p>
+      <p>We've had our good moments, awkward moments, and times when things weren't exactly easy between us. But despite all of that, I'm still really glad I got to know you.</p>
+      <p>And honestly, Steph, you're important to me.</p>
+      <p>I don't say that because I expect anything from you. I just genuinely value you, our friendship, and all the time we've spent talking to each other.</p>
+      <p>It's kind of funny how someone I never expected to meet ended up becoming someone I care about this much.</p>
+      <p>So if there's one thing I want you to get from all of this, it's simply that you matter to me, and I'm really glad you're in my life.</p>
+      <p>That's really it.</p>
+      <p>No pressure, no expectations. Just something I wanted you to know.</p>
+      <p class="sign">— Drew</p>
+    </section>
+
+    <section class="scroll-reveal">
+      <div class="section-title">something to look at</div>
+      <h2 class="section-heading">heart eyes, always <span class="sticker tilt-l">🌸</span></h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section class="scroll-reveal">
+      <div class="section-title">one for every mood</div>
+      <h2 class="section-heading">letters <span class="sticker tilt-r">⭐</span></h2>
+      <div class="letters" id="letters"></div>
+    </section>
+
+    <section class="note scroll-reveal" id="closing-note">
+      <span class="card-sticker">🎀</span>
+      <div class="note-head">
+        <div class="note-dot">♡</div>
+        <h3>just a little reminder</h3>
+      </div>
+      <p>Okay, that's enough cheesy stuff for now.</p>
+      <p>I just wanted to make something that's a little different from just sending you another long message.</p>
+      <p>Almost a year ago, you were just someone I happened to talk to. Now you're someone who's become genuinely important to me.</p>
+      <p>We've had our ups and downs, and there were definitely moments when things weren't easy between us. But I'm still glad that we're here, still talking, still joking around, and still able to be ourselves around each other.</p>
+      <p>I appreciate you more than I probably say, Steph, and I hope you know that.</p>
+      <p>I hope you never feel like you have to change yourself or hide certain parts of who you are just because you're worried about how someone might see you.</p>
+      <p>I like you for who you are as a person, and I genuinely appreciate all the little things that make you, you.</p>
+      <p>So whenever you come back to this little website, just remember one thing:</p>
+      <p>You're important to me. You're appreciated. And I'm really glad I got to know you.</p>
+      <p>That's it. No big speech. Just a little reminder from me to you.</p>
+      <p class="sign">— Drew</p>
+    </section>
+
+  </div>
+
+  <div id="site-footer" class="scroll-reveal">
+    <div class="bouquet-wrap">
+      <span class="sticker tilt-l" style="font-size:16px; align-self:center; margin-right:4px;">✨</span>
+      <svg class="bouquet" viewBox="0 0 130 220" xmlns="http://www.w3.org/2000/svg">
+        <line x1="65" y1="130" x2="40" y2="205" stroke="#7a8f5c" stroke-width="2.5"/>
+        <line x1="65" y1="130" x2="65" y2="210" stroke="#7a8f5c" stroke-width="2.5"/>
+        <line x1="65" y1="130" x2="90" y2="205" stroke="#7a8f5c" stroke-width="2.5"/>
+        <path d="M50 175 Q38 165 42 150" fill="none" stroke="#7a8f5c" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M80 175 Q92 165 88 150" fill="none" stroke="#7a8f5c" stroke-width="2.5" stroke-linecap="round"/>
+        <rect x="38" y="200" width="54" height="14" rx="4" fill="var(--blush)"/>
+
+        <g class="bloom" style="animation-delay:0s">
+          <g transform="translate(40,80)">
+            <ellipse cx="0" cy="-14" rx="9" ry="13" fill="var(--blush)"/>
+            <ellipse cx="13" cy="-6" rx="9" ry="13" fill="var(--blush)" transform="rotate(72 13 -6)"/>
+            <ellipse cx="8" cy="10" rx="9" ry="13" fill="var(--blush)" transform="rotate(144 8 10)"/>
+            <ellipse cx="-8" cy="10" rx="9" ry="13" fill="var(--blush)" transform="rotate(216 -8 10)"/>
+            <ellipse cx="-13" cy="-6" rx="9" ry="13" fill="var(--blush)" transform="rotate(288 -13 -6)"/>
+            <circle cx="0" cy="0" r="7" fill="var(--gold)"/>
+          </g>
+        </g>
+
+        <g class="bloom" style="animation-delay:.8s">
+          <g transform="translate(65,55) scale(1.1)">
+            <ellipse cx="0" cy="-14" rx="9" ry="13" fill="var(--cream)"/>
+            <ellipse cx="13" cy="-6" rx="9" ry="13" fill="var(--cream)" transform="rotate(72 13 -6)"/>
+            <ellipse cx="8" cy="10" rx="9" ry="13" fill="var(--cream)" transform="rotate(144 8 10)"/>
+            <ellipse cx="-8" cy="10" rx="9" ry="13" fill="var(--cream)" transform="rotate(216 -8 10)"/>
+            <ellipse cx="-13" cy="-6" rx="9" ry="13" fill="var(--cream)" transform="rotate(288 -13 -6)"/>
+            <circle cx="0" cy="0" r="7" fill="var(--blush)"/>
+          </g>
+        </g>
+
+        <g class="bloom" style="animation-delay:1.6s">
+          <g transform="translate(90,80)">
+            <ellipse cx="0" cy="-14" rx="9" ry="13" fill="var(--gold)"/>
+            <ellipse cx="13" cy="-6" rx="9" ry="13" fill="var(--gold)" transform="rotate(72 13 -6)"/>
+            <ellipse cx="8" cy="10" rx="9" ry="13" fill="var(--gold)" transform="rotate(144 8 10)"/>
+            <ellipse cx="-8" cy="10" rx="9" ry="13" fill="var(--gold)" transform="rotate(216 -8 10)"/>
+            <ellipse cx="-13" cy="-6" rx="9" ry="13" fill="var(--gold)" transform="rotate(288 -13 -6)"/>
+            <circle cx="0" cy="0" r="7" fill="var(--blush)"/>
+          </g>
+        </g>
+
+        <circle class="sparkle" cx="20" cy="45" r="2.5" fill="var(--gold)" style="animation-delay:0s"/>
+        <circle class="sparkle" cx="108" cy="55" r="2" fill="var(--blush)" style="animation-delay:.6s"/>
+        <circle class="sparkle" cx="65" cy="20" r="2.5" fill="var(--cream)" style="animation-delay:1.2s"/>
+        <circle class="sparkle" cx="30" cy="95" r="2" fill="var(--blush)" style="animation-delay:1.8s"/>
+      </svg>
+      <span class="sticker tilt-r" style="font-size:16px; align-self:center; margin-left:4px;">✨</span>
+    </div>
+    <div class="footer-sign">for Steph, from Drew</div>
+    <div>you can always come back here.</div>
+  </div>
+
+  <!-- ======= LETTER MODAL ======= -->
+  <div id="letter-modal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h3 id="modal-title"></h3>
+        <button id="modal-close" aria-label="close">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-sign">— Drew</div>
+    </div>
+  </div>
+
+  <!-- ======= PHOTO PREVIEW MODAL ======= -->
+  <div id="photo-modal">
+    <div class="photo-card" id="photo-card">
+      <button id="photo-close" aria-label="close">✕</button>
+      <img id="photo-img" src="" alt=""
+           onerror="this.style.display='none'; document.getElementById('photo-fallback').style.display='flex';"
+           onload="this.style.display='block'; document.getElementById('photo-fallback').style.display='none';">
+      <div class="preview-fallback" id="photo-fallback" style="display:none;">
+        <div class="mark">✦</div>
+        <span id="photo-fallback-text"></span>
+      </div>
+      <div class="photo-caption" id="photo-caption"></div>
+      <div class="heart-field" id="heart-field"></div>
+    </div>
+  </div>
+
+<script>
+
+  /* ---------------- SCROLL REVEAL ---------------- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  function observeReveals(){
+    document.querySelectorAll('.scroll-reveal:not(.in-view)').forEach((el) => {
+      revealObserver.observe(el);
+    });
+  }
+
+  /* ---------------- PASSWORD GATE ----------------
+     Change SITE_PASSWORD below to whatever you want it to be.
+     Not real security — just a fun little lock, not a login system. */
+  const SITE_PASSWORD = "foryou";
+
+  const passwordOverlay = document.getElementById('password-overlay');
+  const passwordBox = document.getElementById('password-box');
+  const passwordInput = document.getElementById('password-input');
+  const passwordBtn = document.getElementById('password-btn');
+  const passwordError = document.getElementById('password-error');
+
+  function checkPassword(){
+    if (passwordInput.value.trim().toLowerCase() === SITE_PASSWORD.toLowerCase()){
+      passwordOverlay.classList.add('hidden');
+    } else {
+      passwordError.classList.add('show');
+      passwordBox.classList.remove('shake');
+      void passwordBox.offsetWidth; // restart animation
+      passwordBox.classList.add('shake');
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
+  }
+
+  passwordBtn.addEventListener('click', checkPassword);
+  passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  /* ---------------- THEME TOGGLE ---------------- */
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('cute-mode');
+    themeToggle.textContent = document.body.classList.contains('cute-mode') ? '🌸' : '🌙';
+  });
+
+  /* ---------------- MUSIC ----------------
+     Add your own song.mp3 file next to this html file to use this.
+     If the file is missing, the button just won't do anything —
+     nothing breaks. */
+  const bgMusic = document.getElementById('bg-music');
+  const musicToggle = document.getElementById('music-toggle');
+  bgMusic.volume = 0.45;
+
+  function playMusic(){
+    bgMusic.play().then(() => {
+      musicToggle.classList.add('playing');
+    }).catch(() => {
+      // autoplay blocked by the browser — she can just tap the button
+    });
+  }
+
+  musicToggle.addEventListener('click', () => {
+    if (bgMusic.paused){
+      playMusic();
+    } else {
+      bgMusic.pause();
+      musicToggle.classList.remove('playing');
+    }
+  });
+
+  /* ---------------- CONFETTI BURST ---------------- */
+  function burstConfetti(){
+    const layer = document.createElement('div');
+    layer.className = 'confetti-layer';
+    document.body.appendChild(layer);
+
+    const colors = ['var(--blush)', 'var(--gold)', 'var(--cream)'];
+    const count = 60;
+
+    for (let i = 0; i < count; i++){
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (5 + Math.random() * 6) + 'px';
+      piece.style.height = (10 + Math.random() * 8) + 'px';
+      piece.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+      piece.style.animationDelay = (Math.random() * 0.35) + 's';
+      layer.appendChild(piece);
+    }
+
+    setTimeout(() => layer.remove(), 3400);
+  }
+
+  /* ---------------- JUMPSCARE LOGIC ---------------- */
+  const overlay = document.getElementById('alert-overlay');
+  const alertBox = document.getElementById('alert-box');
+  const alertBtn = document.getElementById('alert-btn');
+
+  setTimeout(() => alertBox.classList.add('shake'), 550);
+  alertBtn.addEventListener('click', () => {
+    overlay.classList.add('hidden');
+    document.getElementById('hero').classList.add('play');
+    setTimeout(typeHeroText, 1500);
+    playMusic();
+    burstConfetti();
+    observeReveals();
+  });
+
+  /* ---------------- HERO TYPING EFFECT ----------------
+     Edit HERO_TEXT below to change what gets typed out. */
+  const HERO_TEXT = "Almost a year of knowing you, which is honestly kind of crazy when you think about it.";
+
+  function typeHeroText(){
+    const target = document.getElementById('typed-text');
+    const cursor = document.getElementById('type-cursor');
+    let i = 0;
+    const speed = 28; // ms per character
+    (function tick(){
+      if (i <= HERO_TEXT.length){
+        target.textContent = HERO_TEXT.slice(0, i);
+        i++;
+        setTimeout(tick, speed);
+      } else {
+        // stop the blink loop softly by leaving the cursor visible/blinking
+        cursor.style.opacity = '1';
+      }
+    })();
+  }
+
+  /* ---------------- PHOTO GALLERY ----------------
+     Looks for photo1.jpg ... photo6.jpg in the same folder.
+     Missing files just show a placeholder card — nothing breaks.
+     Edit the caption for each photo in the PHOTOS array. */
+  const PHOTOS = [
+    { file: "i could stare.jpe", caption: "yeah... I could stare at you all day." },
+    { file: "damn.jpe", caption: "this smile lives rent-free in my head." },
+    { file: "love this view.jpe", caption: "still my favorite view." },
+    { file: "so cute.jpe", caption: "you don't even try, and yet." },
+    { file: "screenshot.jpe", caption: "screenshotted this the second I saw it." },
+    { file: "love this.jpe", caption: "no caption needed, honestly." }
+  ];
+
+  const galleryEl = document.getElementById('gallery');
+
+  PHOTOS.forEach((p, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'photo scroll-reveal';
+    btn.style.transitionDelay = (Math.min(idx, 5) * 0.08) + 's';
+    btn.innerHTML = `
+      <img src="${p.file}" alt="photo"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="fallback" style="display:none;">
+        <div class="mark">✦</div>
+        <span>put ${p.file} here</span>
+      </div>
+    `;
+    btn.addEventListener('click', () => openPhoto(p));
+    galleryEl.appendChild(btn);
+  });
+
+  /* ---------------- PHOTO PREVIEW MODAL ---------------- */
+  const photoModal = document.getElementById('photo-modal');
+  const photoImg = document.getElementById('photo-img');
+  const photoCaption = document.getElementById('photo-caption');
+  const heartField = document.getElementById('heart-field');
+  const photoCard = document.getElementById('photo-card');
+
+  function openPhoto(p){
+    photoImg.src = p.file;
+    photoCaption.textContent = p.caption;
+    document.getElementById('photo-fallback-text').textContent = `put ${p.file} here`;
+    photoModal.classList.add('open');
+    spawnHearts();
+  }
+
+  function spawnHearts(){
+    heartField.innerHTML = '';
+    const symbols = ['♡','♥'];
+    const count = 10;
+    for (let i = 0; i < count; i++){
+      const h = document.createElement('span');
+      h.className = 'heart';
+      h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      h.style.left = (Math.random() * 90 + 2) + '%';
+      h.style.animationDelay = (Math.random() * 1.4) + 's';
+      h.style.fontSize = (12 + Math.random() * 14) + 'px';
+      heartField.appendChild(h);
+    }
+  }
+
+  document.getElementById('photo-close').addEventListener('click', () => {
+    photoModal.classList.remove('open');
+  });
+  photoModal.addEventListener('click', (e) => {
+    if (e.target === photoModal) photoModal.classList.remove('open');
+  });
+
+  /* ---------------- LETTER CONTENT ----------------
+     Replace title / teaser / body with your own writing.
+     Add or remove letters in this array freely. */
+  const LETTERS = [
+    {
+      title: "for when you miss me",
+      teaser: "just in case you ever do.",
+      body: [
+        "I don't know if you actually miss me when we're not talking, but if you ever do, even just a little, I hope this makes you smile.",
+        "We're still talking pretty often, so I don't even know why I'm making a letter for this.",
+        "But maybe there'll be a random day when you miss our stupid conversations, our jokes, or just having me around.",
+        "And if that ever happens, just know that I probably miss talking to you too."
+      ]
+    },
+    {
+      title: "for when you don't feel pretty",
+      teaser: "because you need reminding sometimes.",
+      body: [
+        "I know there might be days when you don't feel good about yourself, when you look at yourself and start noticing every little thing you wish you could change.",
+        "But I hope you never feel like you have to change yourself just to fit someone else's idea of what you're supposed to be.",
+        "I appreciate you as you are. Your personality, your sense of style, the way you express yourself, and all those little things that make you different from everyone else.",
+        "None of those things make me think any less of you. I've never wanted you to be someone you're not, and I've never thought you needed to change just to be appreciated.",
+        "I hope you know that you don't have to be perfect around me either. You can be yourself without worrying about being judged.",
+        "So on the days when you're being a little too hard on yourself, I hope you remember that there's someone who genuinely appreciates you for who you are.",
+        "You're beautiful in your own way, Steph. Don't let one bad day convince you otherwise."
+      ]
+    },
+    {
+      title: "for when you're having a bad day",
+      teaser: "you don't have to be okay all the time.",
+      body: [
+        "I don't know what kind of day you're having when you read this, but I hope it gets a little better.",
+        "You don't always have to be okay. If you need some time for yourself, that's completely fine. And if you feel like talking, I'm here too.",
+        "You don't even have to talk about what's bothering you if you don't want to.",
+        "We can just talk about random things, make stupid jokes, or distract ourselves with something completely pointless.",
+        "Sometimes you don't need a solution. Sometimes you just need someone around."
+      ]
+    },
+    {
+      title: "for when you need a little reminder",
+      teaser: "you matter to me. simple as that.",
+      body: [
+        "Just in case you ever forget, you're important to me.",
+        "Not because of anything you do for me, but simply because you're you.",
+        "You've been part of my life for almost a year now, and whether we're having a serious conversation or just making fun of each other over something stupid, I still appreciate having you around.",
+        "I might not always say it, but I genuinely care about you and I'm grateful that I got to know you.",
+        "So whenever you need a little reminder that you matter, come back to this.",
+        "You matter to me, Steph."
+      ]
+    },
+    {
+      title: "for when you feel alone",
+      teaser: "sometimes just having someone there is enough.",
+      body: [
+        "I know there are times when you might just want someone around, even if you don't really feel like talking.",
+        "I can't promise I'll always know exactly what to say, but you don't always have to say anything either.",
+        "We can send each other random stuff, talk about whatever comes to mind, make fun of each other, or just have one of those conversations that doesn't really have a point.",
+        "You don't always need to have something interesting to say.",
+        "You can just be yourself. You don't have to worry about being judged or having to act a certain way around me.",
+        "Sometimes just having someone there is enough.",
+        "And if you ever need that, I'm here."
+      ]
+    },
+    {
+      title: "for no reason at all",
+      teaser: "no occasion, just wanted to say it.",
+      body: [
+        "This one doesn't really have a reason.",
+        "I just wanted to say that I'm glad I met you.",
+        "I never would've expected that one random conversation would eventually turn into almost a year of knowing each other.",
+        "We've talked about so many random things, laughed at so much stupid stuff, and somehow made a lot of memories along the way.",
+        "I don't think I would've expected you to become this important to me, but I'm glad you did.",
+        "So yeah, no special occasion.",
+        "I just wanted you to know that I appreciate you, Steph."
+      ]
+    },
+    {
+      title: "for when you need someone to remind you",
+      teaser: "you're appreciated more than you know.",
+      body: [
+        "You might not realize it sometimes, but you've become a pretty important person in my life.",
+        "We've had our good moments, awkward moments, quiet moments, and everything in between.",
+        "But through all of that, I'm still glad I got to know you.",
+        "I don't say it all the time, but I really do appreciate having you around.",
+        "I hope you always feel like you can be yourself around me. You never have to worry about me judging you for the things you like, the way you express yourself, or the person you choose to be.",
+        "So if you ever forget how much you mean to the people who care about you, let this be your little reminder.",
+        "You're appreciated more than you probably realize."
+      ]
+    }
+  ];
+
+  const lettersEl = document.getElementById('letters');
+  const modal = document.getElementById('letter-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+
+  LETTERS.forEach((letter, i) => {
+    const card = document.createElement('button');
+    card.className = 'letter-card scroll-reveal';
+    card.style.transitionDelay = (Math.min(i, 6) * 0.08) + 's';
+    card.innerHTML = `
+      <div class="letter-num">letter 0${i + 1}</div>
+      <div class="letter-title">${letter.title}</div>
+      <div class="letter-teaser">${letter.teaser}</div>
+      <div class="letter-open">open letter →</div>
+    `;
+    card.addEventListener('click', () => openLetter(letter));
+    lettersEl.appendChild(card);
+  });
+
+  function openLetter(letter){
+    modalTitle.textContent = letter.title;
+    modalBody.innerHTML = letter.body.map(p => `<p>${p}</p>`).join('');
+    modal.classList.add('open');
+  }
+
+  document.getElementById('modal-close').addEventListener('click', () => {
+    modal.classList.remove('open');
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('open');
+  });
+
+</script>
+</body>
+</html>
